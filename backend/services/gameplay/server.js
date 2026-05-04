@@ -1,7 +1,7 @@
-const express = require("express");
-const mysql = require("mysql2/promise");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express');
+const mysql = require('mysql2/promise');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
@@ -14,44 +14,43 @@ const db = mysql.createPool({
   database: process.env.DB_NAME
 });
 
-const locations = ["Lake", "River", "Ocean"];
-
-function rollRarity() {
-  const roll = Math.random() * 100;
-
-  if (roll < 70) return "common";
-  if (roll < 93) return "uncommon";
-  return "rare";
-}
-
-app.get("/", (req, res) => {
-  res.send("gameplay service alive");
+app.get('/', (req, res) => {
+  res.send('gameplay service alive');
 });
 
-app.get("/locations", (req, res) => {
-  res.json(locations);
+app.get('/locations', (req, res) => {
+  res.json(["Lake", "River", "Ocean"]);
 });
 
-app.get("/fish", async (req, res) => {
-  const [rows] = await db.query(
-    "SELECT id, name, location, rarity FROM fish_species ORDER BY location, rarity"
-  );
-
+app.get('/fish', async (req, res) => {
+  const [rows] = await db.query('SELECT * FROM fish_species');
   res.json(rows);
 });
 
-app.post("/catch", async (req, res) => {
+function rollRarity() {
+  const r = Math.random();
+  if (r < 0.6) return 'common';
+  if (r < 0.9) return 'uncommon';
+  return 'rare';
+}
+
+function rollFrenzy() {
+  return Math.random() < 0.1; // 10% chance
+}
+
+// CATCH FISH
+app.post('/catch', async (req, res) => {
   try {
     const { userId, location } = req.body;
 
     if (!userId || !location) {
-      return res.status(400).json({ error: "userId and location are required" });
+      return res.status(400).json({ error: "userId and location required" });
     }
 
     const rarity = rollRarity();
 
     const [fishRows] = await db.query(
-      "SELECT id, name, location, rarity FROM fish_species WHERE location = ? AND rarity = ? LIMIT 1",
+      'SELECT id, name FROM fish_species WHERE location = ? AND rarity = ? LIMIT 1',
       [location, rarity]
     );
 
@@ -61,32 +60,37 @@ app.post("/catch", async (req, res) => {
 
     const fish = fishRows[0];
 
+    const frenzy = rollFrenzy();
+    const quantity = frenzy ? 3 : 1;
+
     await db.query(
-      "INSERT INTO catches (user_id, fish_id) VALUES (?, ?)",
-      [userId, fish.id]
+      'INSERT INTO catches (user_id, fish_id, quantity) VALUES (?, ?, ?)',
+      [userId, fish.id, quantity]
     );
 
     await db.query(
       `INSERT INTO inventory (user_id, fish_id, quantity)
-       VALUES (?, ?, 1)
-       ON DUPLICATE KEY UPDATE quantity = quantity + 1`,
-      [userId, fish.id]
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE quantity = quantity + ?`,
+      [userId, fish.id, quantity, quantity]
     );
 
     res.json({
-      message: "fish caught",
-      fish
+      message: frenzy
+        ? `Fishing Frenzy! You caught ${fish.name} (${rarity}) x${quantity}`
+        : `You caught a ${fish.name} (${rarity}) x${quantity}`,
+      fish: fish.name,
+      rarity,
+      quantity,
+      frenzy
     });
+
   } catch (error) {
     console.error("catch failed:", error.message);
-
-    res.status(500).json({
-      error: "catch failed",
-      details: error.message
-    });
+    res.status(500).json({ error: "catch failed" });
   }
 });
 
 app.listen(4002, () => {
-  console.log("gameplay running on 4002");
+  console.log('gameplay running on 4002');
 });
