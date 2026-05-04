@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fishing Game</title>
+</head>
+<body>
+  <h1>Fishing Game</h1>
+
+  <h2>Register</h2>
+  <input id="username" placeholder="username" />
+  <button onclick="register()">Register</button>
+
+  <h2>Catch Fish</h2>
+  <select id="location">
+    <option>Lake</option>
+    <option>River</option>
+    <option>Ocean</option>
+  </select>
+  <button onclick="catchFish()">Catch</button>
+
+  <h2>Inventory</h2>
+  <button onclick="loadInventory()">Load Inventory</button>
+  <ul id="inventory"></ul>
+
+  <script src="app.js"></script>
+</body>
+</html>

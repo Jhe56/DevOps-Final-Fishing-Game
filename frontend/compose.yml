@@ -1,0 +1,9 @@
+services:
+  frontend:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npx serve -l 8080 ."
+    ports:
+      - "8080:8080"

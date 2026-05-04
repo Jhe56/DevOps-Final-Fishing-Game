@@ -1,8 +1,10 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const db = mysql.createPool({
@@ -17,14 +19,31 @@ app.get('/', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  const { username } = req.body;
+  try {
+    const { username } = req.body;
 
-  await db.query(
-    'INSERT INTO users (username, password_hash) VALUES (?, ?)',
-    [username, 'temp']
-  );
+    if (!username) {
+      return res.status(400).json({ error: "username is required" });
+    }
 
-  res.send('user created');
+    const [result] = await db.query(
+      'INSERT INTO users (username, password_hash) VALUES (?, ?)',
+      [username, 'temp']
+    );
+
+    res.json({
+      message: 'user created',
+      userId: result.insertId,
+      username
+    });
+  } catch (error) {
+    console.error("register failed:", error.message);
+
+    res.status(500).json({
+      error: "register failed",
+      details: error.message
+    });
+  }
 });
 
 app.listen(4001, () => console.log('auth running on 4001'));
