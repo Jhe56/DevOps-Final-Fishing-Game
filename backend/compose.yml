@@ -36,3 +36,16 @@ services:
       - "4002:4002"
     depends_on:
       - mysql
+
+  player-profile:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./services/player-profile:/app
+    command: sh -c "npm install && node server.js"
+    env_file:
+      - .env
+    ports:
+      - "4003:4003"
+    depends_on:
+      - mysql
