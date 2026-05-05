@@ -9,3 +9,7 @@ output "public_subnets" {
 output "private_subnets" {
   value = module.vpc.private_subnets
 }
+
+output "rds_endpoint" {
+  value = aws_db_instance.mysql.address
+}
