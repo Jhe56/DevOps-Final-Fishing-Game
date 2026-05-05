@@ -13,3 +13,11 @@ output "private_subnets" {
 output "rds_endpoint" {
   value = aws_db_instance.mysql.address
 }
+
+output "eks_cluster_name" {
+  value = aws_eks_cluster.main.name
+}
+
+output "eks_cluster_endpoint" {
+  value = aws_eks_cluster.main.endpoint
+}

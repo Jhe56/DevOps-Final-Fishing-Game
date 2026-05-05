@@ -56,3 +56,33 @@ resource "aws_db_instance" "mysql" {
   skip_final_snapshot    = true
   deletion_protection    = false
 }
+
+resource "aws_eks_cluster" "main" {
+  name     = "fishing-game-eks"
+  role_arn = "arn:aws:iam::254361319875:role/LabRole"
+  version  = "1.33"
+
+  vpc_config {
+    subnet_ids              = module.vpc.private_subnets
+    endpoint_public_access  = true
+    endpoint_private_access = true
+  }
+}
+
+resource "aws_eks_node_group" "app_nodes" {
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "fishing-game-nodes"
+  node_role_arn   = "arn:aws:iam::254361319875:role/LabRole"
+  subnet_ids      = module.vpc.private_subnets
+
+  instance_types = ["t3.small"]
+  ami_type       = "AL2023_x86_64_STANDARD"
+
+  scaling_config {
+    desired_size = 1
+    min_size     = 1
+    max_size     = 2
+  }
+
+  depends_on = [aws_eks_cluster.main]
+}
