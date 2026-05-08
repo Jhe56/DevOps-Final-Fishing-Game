@@ -84,7 +84,7 @@ spec:
               mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < /schema/schema.sql
           env:
             - name: DB_HOST
-              value: "fishing-game-mysql.cceozagz8r5h.us-east-1.rds.amazonaws.com"
+              value: "RDS ENDPOINT"
             - name: DB_PORT
               value: "3306"
             - name: DB_USER
