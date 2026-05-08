@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: player-profile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: player-profile
+  template:
+    metadata:
+      labels:
+        app: player-profile
+    spec:
+      containers:
+        - name: player-profile
+          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:profile
+          ports:
+            - containerPort: 4003

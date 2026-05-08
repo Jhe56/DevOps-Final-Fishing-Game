@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account-auth
+  template:
+    metadata:
+      labels:
+        app: account-auth
+    spec:
+      containers:
+        - name: account-auth
+          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:auth
+          ports:
+            - containerPort: 4001
