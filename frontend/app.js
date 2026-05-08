@@ -1,6 +1,6 @@
-const AUTH = "http://localhost:4001";
-const GAME = "http://localhost:4002";
-const PROFILE = "http://localhost:4003";
+const AUTH = "/api/auth";
+const GAME = "/api/gameplay";
+const PROFILE = "/api/profile";
 
 let userId = localStorage.getItem("userId");
 

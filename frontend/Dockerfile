@@ -2,10 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN npm install -g serve
+COPY package*.json ./
+
+RUN npm install
 
 COPY . .
 
 EXPOSE 8080
 
-CMD ["serve", "-s", ".", "-l", "8080"]
+CMD ["node", "server.js"]
