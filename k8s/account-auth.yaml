@@ -17,3 +17,22 @@ spec:
           image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:auth
           ports:
             - containerPort: 4001
+
+          env:
+            - name: DB_HOST
+              value: "RDS Endpoint"
+
+            - name: DB_PORT
+              value: "3306"
+
+            - name: DB_USER
+              value: "fishadmin"
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+
+            - name: DB_NAME
+              value: "fishing_game"

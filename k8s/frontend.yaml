@@ -17,5 +17,3 @@ spec:
           image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:frontend
           ports:
             - containerPort: 8080
-
-          
