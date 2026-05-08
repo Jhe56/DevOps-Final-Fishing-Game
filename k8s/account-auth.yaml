@@ -18,22 +18,24 @@ spec:
           ports:
             - containerPort: 4001
 
+          envFrom:
+            - configMapRef:
+                name: db-config
           env:
-            - name: DB_HOST
-              value: "RDS Endpoint"
-
-            - name: DB_PORT
-              value: "3306"
-
-            - name: DB_USER
-              value: "fishadmin"
-
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: db-secret
                   key: password
-
-            - name: DB_NAME
-              value: "fishing_game"
-              
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-auth
+spec:
+  selector:
+    app: account-auth
+  ports:
+    - port: 4001
+      targetPort: 4001
+  type: ClusterIP
