@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
+const bcrypt = require("bcryptjs");
 const cors = require('cors');
 require('dotenv').config();
 
@@ -25,6 +26,21 @@ app.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    const usernamePattern = /^[a-zA-Z0-9_-]{3,20}$/;
+    if (!usernamePattern.test(username)) { 
+      return res.status(400).json({ 
+        error: "Username must be 3-20 characters and only use letters, numbers, _ or -" 
+      }); 
+    }
+
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=]{8,64}$/;
+    if (!passwordPattern.test(password)) {
+      return res.status(400).json({
+        error:
+          "Password must be 8-64 characters and include at least one letter and one number"
+      });
+    }
+
     if (!username || !password) {
       return res.status(400).json({ error: "username and password required" });
     }
@@ -39,9 +55,10 @@ app.post('/register', async (req, res) => {
       return res.status(409).json({ error: "Username is already taken!" });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const [result] = await db.query(
       'INSERT INTO users (username, password_hash) VALUES (?, ?)',
-      [username, password]
+      [username, hashedPassword]
     );
 
     res.json({
@@ -61,6 +78,21 @@ app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    const usernamePattern = /^[a-zA-Z0-9_-]{3,20}$/;
+    if (!usernamePattern.test(username)) { 
+      return res.status(400).json({ 
+        error: "Username must be 3-20 characters and only use letters, numbers, _ or -" 
+      }); 
+    }
+
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=]{8,64}$/;
+    if (!passwordPattern.test(password)) {
+      return res.status(400).json({
+        error:
+          "Password must be 8-64 characters and include at least one letter and one number"
+      });
+    }
+
     const [rows] = await db.query(
       'SELECT id, password_hash, title FROM users WHERE username = ?',
       [username]
@@ -71,8 +103,9 @@ app.post('/login', async (req, res) => {
     }
 
     const user = rows[0];
+    const passwordMatches = await bcrypt.compare(password, user.password_hash);
 
-    if (user.password_hash !== password) {
+    if (!passwordMatches) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
