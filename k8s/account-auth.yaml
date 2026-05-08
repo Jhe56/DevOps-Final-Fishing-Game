@@ -36,3 +36,4 @@ spec:
 
             - name: DB_NAME
               value: "fishing_game"
+              
