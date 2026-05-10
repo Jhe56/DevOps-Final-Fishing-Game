@@ -21,6 +21,11 @@ app.get('/', (req, res) => {
   res.send('auth service alive');
 });
 
+// HEALTH CHECK
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // REGISTER
 app.post('/register', async (req, res) => {
   try {

@@ -19,6 +19,11 @@ app.get('/', (req, res) => {
   res.send('player-profile service alive');
 });
 
+// HEALTH CHECK
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // INVENTORY
 app.get('/inventory/:userId', async (req, res) => {
   try {

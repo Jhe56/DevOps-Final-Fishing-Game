@@ -19,6 +19,11 @@ app.get('/', (req, res) => {
   res.send('gameplay service alive');
 });
 
+// HEALTH CHECK
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.get('/locations', (req, res) => {
   res.json(["Lake", "River", "Ocean"]);
 });
