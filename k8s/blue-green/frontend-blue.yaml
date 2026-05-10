@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: frontend
+        version: blue
+    spec:
+      containers:
+        - name: frontend
+          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

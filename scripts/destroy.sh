@@ -8,7 +8,7 @@ if [ -z "${DB_PASSWORD:-}" ]; then
 fi
 
 echo "Deleting Kubernetes resources first..."
-
+kubectl delete -f k8s/blue-green/ --ignore-not-found=true || true
 kubectl delete -f k8s/ --ignore-not-found=true || true
 kubectl delete configmap db-config --ignore-not-found=true || true
 kubectl delete secret db-secret --ignore-not-found=true || true
