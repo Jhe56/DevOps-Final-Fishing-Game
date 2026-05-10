@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: gameplay
-          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:gameplay
+          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:gameplay-v0.1
           ports:
             - containerPort: 4002
 

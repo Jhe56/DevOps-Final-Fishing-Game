@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: account-auth
-          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:auth
+          image: 254361319875.dkr.ecr.us-east-1.amazonaws.com/fishing-app:auth-v0.1
           ports:
             - containerPort: 4001
 
