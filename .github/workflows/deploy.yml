@@ -56,5 +56,10 @@ jobs:
       - name: Make deploy script executable
         run: chmod +x scripts/deploy.sh
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
       - name: Deploy infrastructure and app
         run: ./scripts/deploy.sh
