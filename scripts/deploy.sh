@@ -13,6 +13,7 @@ fi
 
 echo "Applying Terraform..."
 cd terraform
+terraform init
 terraform apply -var="db_password=${DB_PASSWORD}" --auto-approve
 
 echo "Updating kubeconfig..."
