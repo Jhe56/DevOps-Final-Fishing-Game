@@ -3,3 +3,4 @@ node_modules/
 tfplan
 *tfstate*
 *package-lock.json
+smoke.log

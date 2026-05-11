@@ -59,4 +59,9 @@ kubectl get pods
 echo "Current services:"
 kubectl get svc
 
+echo "Deploying Monitor Services (Prometheus Community Stack)"
+cd ..
+chmod +x ./scripts/deploy-monitoring.sh
+./scripts/deploy-monitoring.sh
+
 echo "Deploy complete."
