@@ -15,6 +15,13 @@ const db = mysql.createPool({
   database: process.env.DB_NAME
 });
 
+function titleForCounts(common, uncommon, rare) {
+  if (rare >= 10) return "Rare Fish Champion";
+  if (uncommon >= 10) return "Seasoned Angler";
+  if (common >= 10) return "Pond Pro";
+  return "Rookie Angler";
+}
+
 app.get('/', (req, res) => {
   res.send('gameplay service alive');
 });
@@ -80,6 +87,36 @@ app.post('/catch', async (req, res) => {
        ON DUPLICATE KEY UPDATE quantity = quantity + ?`,
       [userId, fish.id, quantity, quantity]
     );
+
+    const rarityColumn =
+      rarity === "common"
+        ? "common_caught"
+        : rarity === "uncommon"
+          ? "uncommon_caught"
+          : "rare_caught";
+
+      await db.query(
+        `UPDATE users SET ${rarityColumn} = ${rarityColumn} + 1 WHERE id = ?`,
+        [userId]
+      );
+
+      const [countRows] = await db.query(
+        `SELECT common_caught, uncommon_caught, rare_caught FROM users WHERE id = ?`,
+        [userId]
+      );
+
+      const counts = countRows[0];
+
+      const newTitle = titleForCounts(
+        counts.common_caught,
+        counts.uncommon_caught,
+        counts.rare_caught
+      );
+
+      await db.query(
+        `UPDATE users SET title = ? WHERE id = ?`,
+        [newTitle, userId]
+      );
 
     res.json({
       message: frenzy
