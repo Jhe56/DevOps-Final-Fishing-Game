@@ -7,6 +7,10 @@ if [ -z "${DB_PASSWORD:-}" ]; then
   exit 1
 fi
 
+echo "Deleting monitoring stack..."
+helm uninstall monitoring -n monitoring || true
+kubectl delete namespace monitoring --ignore-not-found=true || true
+
 echo "Deleting Kubernetes resources first..."
 kubectl delete -f k8s/blue-green/ --ignore-not-found=true || true
 kubectl delete -f k8s/ --ignore-not-found=true || true
