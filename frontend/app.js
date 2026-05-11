@@ -89,9 +89,11 @@ async function catchFish() {
   });
 
   const data = await res.json();
-  alert(data.message);
-}
 
+  alert(data.message);
+
+  await loadProfile();
+}
 // ---------- INVENTORY ----------
 
 const rarityColors = {

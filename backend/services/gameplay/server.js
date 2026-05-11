@@ -114,8 +114,8 @@ app.post('/catch', async (req, res) => {
       );
 
       await db.query(
-        `UPDATE users SET title = ? WHERE id = ?`,
-        [newTitle, userId]
+        `UPDATE users SET ${rarityColumn} = ${rarityColumn} + ? WHERE id = ?`,
+        [quantity, userId]
       );
 
     res.json({
